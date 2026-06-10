@@ -1,0 +1,25 @@
+services:
+  api_inventory:
+    build: .
+    container_name: contenedor_api_inventario
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db_inventory
+
+  db_inventory:
+    image: postgres:15
+    container_name: contenedor_postgres_inventario
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=SzwuOJXV0nkDQ1
+      - POSTGRES_DB=inventory_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_inventory_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_inventory_data:

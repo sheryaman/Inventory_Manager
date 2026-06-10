@@ -1,7 +1,8 @@
 from typing import List
 from sqlalchemy import create_engine,ForeignKey
 from sqlalchemy.orm import DeclarativeBase , Session , relationship , Mapped , mapped_column , sessionmaker
-
+from dotenv import load_dotenv
+import os 
 
 class Base(DeclarativeBase):
     pass
@@ -19,8 +20,8 @@ class Product(Base):
     stock: Mapped[int] = mapped_column(nullable=False)
     category_id : Mapped[int] = mapped_column(ForeignKey("categories.id"))
     category: Mapped["Category"] = relationship("Category",back_populates="products")
-
-engine = create_engine("sqlite:///store_alchemy.db")
+load_dotenv()
+engine = create_engine(os.getenv("DATABASE_URL"))
 SessionLocalUser = sessionmaker(bind=engine)
 def get_session():
     session = SessionLocalUser()
@@ -80,11 +81,11 @@ def delete_product(name):
     
 
 
-Base.metadata.create_all(engine)
-
 if __name__ == "__main__":
- session = next(get_session())
- products = get_all_products(session)
- for p in products:
-    print(p)
- session.close()
+    Base.metadata.create_all(engine)
+    print("Connected to PostgreSQL successfully")
+    session = next(get_session())
+    products = get_all_products(session)
+    for p in products:
+        print(p)
+    session.close()
